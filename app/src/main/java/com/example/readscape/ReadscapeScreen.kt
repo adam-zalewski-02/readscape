@@ -1,7 +1,5 @@
 package com.example.readscape
 
-import android.app.Activity
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -80,13 +78,7 @@ fun ReadScapeApp(userDao: UserDao) {
 
     LaunchedEffect(loginStatus) {
         when (loginStatus) {
-            true -> navController.navigate(ReadScapeScreen.Home.name) {
-                // Pop up to the start destination (Login) and clear it from the back stack
-                popUpTo(ReadScapeScreen.LogIn.name) {
-                    // Exclude the start destination (Login) from the back stack
-                    inclusive = false
-                }
-            }
+            true -> navController.navigate(ReadScapeScreen.Profile.name)
             false -> navController.navigate(ReadScapeScreen.LogIn.name)
         }
     }
@@ -161,14 +153,19 @@ fun ReadScapeApp(userDao: UserDao) {
 
             }
 
-            /*
-            composable(route = ReadScapeScreen.Profile.name) {
-                ProfileScreen(
-                    user =
-                ) {
 
+            composable(route = ReadScapeScreen.Profile.name) {
+                val userState by viewModel.loggedInUser.collectAsState(initial = null)
+                userState?.let {user ->
+                    ProfileScreen(
+                        user = user,
+                        onLogoutClicked = {
+                            viewModel.logOut()
+                            navController.navigate(ReadScapeScreen.LogIn.name)
+                        }
+                    )
                 }
-            }*/
+            }
         }
     }
 }

@@ -18,10 +18,18 @@ class EntryViewModel(private val userDao: UserDao) : ViewModel() {
     private val _loginStatus = MutableStateFlow(false)
     val loginStatus: StateFlow<Boolean> = _loginStatus.asStateFlow()
 
+    private val _loggedInUser = MutableStateFlow<User?>(null)
+    val loggedInUser: StateFlow<User?> = _loggedInUser.asStateFlow()
     fun logIn(email: String, password: String) {
         viewModelScope.launch {
             val user = userDao.getUserByEmail(email)
-            _loginStatus.value = user != null && user.password == password
+            if (user != null && user.password == password) {
+                _loginStatus.value = true
+                _loggedInUser.value = user
+            } else {
+                _loginStatus.value = false
+                _loggedInUser.value = null
+            }
         }
     }
 
@@ -37,7 +45,7 @@ class EntryViewModel(private val userDao: UserDao) : ViewModel() {
         }
     }
     fun logOut() {
-        setLoggedIn(false)
+        _loginStatus.value = false
     }
 
     fun setEmail(email: String) {
@@ -46,9 +54,5 @@ class EntryViewModel(private val userDao: UserDao) : ViewModel() {
 
     fun setPassword(password: String) {
         _uiState.update { currentState -> currentState.copy(password = password) }
-    }
-
-    private fun setLoggedIn(loggedIn: Boolean) {
-        _uiState.update { currentState -> currentState.copy(loggedIn = loggedIn) }
     }
 }
