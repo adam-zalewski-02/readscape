@@ -12,13 +12,19 @@ class EntryViewModel : ViewModel() {
     val uiState: StateFlow<EntryUiState> = _uiState.asStateFlow()
 
     fun logIn(email: String, password: String) {
+        /* TODO: read from database*/
         if (email == "aa" && password == "shen") {
             setLoggedIn(true)
         }
     }
 
-    fun signUp() {
-        /* TODO */
+    fun signUp(email: String, password: String, repeatPassword: String): Boolean {
+        if (password == repeatPassword) {
+            /* TODO: try to add to database*/
+            return true
+        } else {
+            return false
+        }
     }
 
     fun logOut() {
