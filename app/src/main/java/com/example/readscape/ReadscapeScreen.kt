@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -27,6 +28,7 @@ import com.example.readscape.ui.ProfileScreen
 import com.example.readscape.ui.RegistrationFailedScreen
 import com.example.readscape.ui.RegistrationSuccessfulScreen
 import com.example.readscape.ui.SignupScreen
+import com.example.readscape.ui.UserPreferences
 
 enum class ReadScapeScreen {
     LogIn,
@@ -66,7 +68,9 @@ fun ReadScapeAppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReadScapeApp(userDao: UserDao) {
-    val viewModel: EntryViewModel = viewModel(factory = EntryViewModelFactory(userDao))
+    val context = LocalContext.current
+    val userPreferences = UserPreferences(context)
+    val viewModel: EntryViewModel = viewModel(factory = EntryViewModelFactory(userDao, userPreferences))
     val navController = rememberNavController()
 
     val backStackEntry by navController.currentBackStackEntryAsState()

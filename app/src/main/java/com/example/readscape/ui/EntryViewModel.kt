@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class EntryViewModel(private val userDao: UserDao) : ViewModel() {
+class EntryViewModel(private val userDao: UserDao, private val userPreferences: UserPreferences) : ViewModel() {
     private val _uiState = MutableStateFlow(EntryUiState())
     val uiState: StateFlow<EntryUiState> = _uiState.asStateFlow()
 
@@ -26,6 +26,8 @@ class EntryViewModel(private val userDao: UserDao) : ViewModel() {
             if (user != null && user.password == password) {
                 _loginStatus.value = true
                 _loggedInUser.value = user
+                userPreferences.setLoggedInStatus(true)
+                userPreferences.setLoggedUserId(user.id)
             } else {
                 _loginStatus.value = false
                 _loggedInUser.value = null
@@ -45,7 +47,25 @@ class EntryViewModel(private val userDao: UserDao) : ViewModel() {
         }
     }
     fun logOut() {
+        _loggedInUser.value = null
         _loginStatus.value = false
+        userPreferences.setLoggedInStatus(false)
+        userPreferences.setLoggedUserId(0)
+    }
+    init {
+        loadUser()
+    }
+    fun loadUser() {
+        val userId = userPreferences.getLoggedUserId()
+        if (userId != 0) {
+            viewModelScope.launch {
+                val user = userDao.getUserById(userId) // You need to implement this function in UserDao
+                if (user != null) {
+                    _loggedInUser.value = user
+                    _loginStatus.value = true
+                }
+            }
+        }
     }
 
     fun setEmail(email: String) {
