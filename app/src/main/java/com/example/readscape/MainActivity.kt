@@ -25,7 +25,6 @@ class MainActivity : ComponentActivity() {
     private lateinit var userDao: UserDao
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         userDao = BookDatabase.getInstance(this).userDao()
         createNotificationChannel(this)
 
@@ -35,7 +34,11 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+
         scheduleReadScapeWorker()
+    }
+    override fun onBackPressed() {
+        moveTaskToBack(true)
     }
     private fun scheduleReadScapeWorker() {
         val workRequest = OneTimeWorkRequestBuilder<ReadScapeWorker>()
