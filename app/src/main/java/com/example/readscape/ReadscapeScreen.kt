@@ -21,6 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.readscape.ui.EntryViewModel
 import com.example.readscape.ui.LoginScreen
+import com.example.readscape.ui.RegistrationFailedScreen
 import com.example.readscape.ui.RegistrationSuccessfulScreen
 import com.example.readscape.ui.SignupScreen
 
@@ -28,6 +29,7 @@ enum class ReadScapeScreen {
     LogIn,
     SignUp,
     RegistrationSuccess,
+    RegistrationFailed,
     Home
 }
 
@@ -102,7 +104,6 @@ fun ReadScapeApp(viewModel: EntryViewModel = viewModel()) {
                     },
                     onValueChangedEmail = {
                         email -> viewModel.setEmail(email)
-                        navController.navigate(ReadScapeScreen.SignUp.name)
                     },
                     onValueChangedPassword = {
                         password -> viewModel.setPassword(password)
@@ -112,14 +113,37 @@ fun ReadScapeApp(viewModel: EntryViewModel = viewModel()) {
             
             composable(route = ReadScapeScreen.SignUp.name) {
                 SignupScreen(
-                    onLogInButtonClicked = { navController.navigate(ReadScapeScreen.LogIn.name) },
-                    onSignUpButtonClicked = { navController.navigate(ReadScapeScreen.RegistrationSuccess.name) }
+                    onLogInButtonClicked = {
+                        navController.navigate(ReadScapeScreen.LogIn.name)
+                    },
+                    onSignUpButtonClicked = { email, password, repeatPassword ->
+                        if (viewModel.signUp(email, password, repeatPassword)) {
+                            navController.navigate(ReadScapeScreen.RegistrationSuccess.name)
+                        } else {
+                            navController.navigate(ReadScapeScreen.RegistrationFailed.name)
+                        }
+                    },
+                    onValueChangedEmail = {
+                        email -> viewModel.setEmail(email)
+                    },
+                    onValueChangedPassword = {
+                        password -> viewModel.setPassword(password)
+                    },
+                    onValueChangedRepeatPassword = {
+
+                    }
                 )
             }
 
             composable(route = ReadScapeScreen.RegistrationSuccess.name) {
                 RegistrationSuccessfulScreen(
                     onBackToLoginClicked = { navController.navigate(ReadScapeScreen.LogIn.name) }
+                )
+            }
+
+            composable(route = ReadScapeScreen.RegistrationFailed.name) {
+                RegistrationFailedScreen(
+                    onTryAgainClicked = { navController.navigate(ReadScapeScreen.SignUp.name) }
                 )
             }
 
