@@ -21,8 +21,6 @@ class EntryViewModel(private val userDao: UserDao) : ViewModel() {
     fun logIn(email: String, password: String) {
         viewModelScope.launch {
             val user = userDao.getUserByEmail(email)
-            println(user)
-
             _loginStatus.value = user != null && user.password == password
         }
     }

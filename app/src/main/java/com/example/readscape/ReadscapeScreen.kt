@@ -75,7 +75,6 @@ fun ReadScapeApp(userDao: UserDao) {
     val loginStatus by viewModel.loginStatus.collectAsState()
 
     LaunchedEffect(loginStatus) {
-        println(loginStatus)
         when (loginStatus) {
             true -> navController.navigate(ReadScapeScreen.Home.name)
             false -> navController.navigate(ReadScapeScreen.LogIn.name)
