@@ -19,6 +19,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.readscape.model.UserDao
 import com.example.readscape.ui.EntryViewModel
 import com.example.readscape.ui.LoginScreen
 import com.example.readscape.ui.RegistrationFailedScreen
@@ -61,7 +62,8 @@ fun ReadScapeAppBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReadScapeApp(viewModel: EntryViewModel = viewModel()) {
+fun ReadScapeApp(userDao: UserDao) {
+    val viewModel: EntryViewModel = viewModel(factory = EntryViewModelFactory(userDao))
     val navController = rememberNavController()
 
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -69,8 +71,6 @@ fun ReadScapeApp(viewModel: EntryViewModel = viewModel()) {
     val currentScreen = ReadScapeScreen.valueOf(
         backStackEntry?.destination?.route ?: ReadScapeScreen.LogIn.name
     )
-
-    val viewModel: EntryViewModel = viewModel()
 
     Scaffold(
         topBar = {

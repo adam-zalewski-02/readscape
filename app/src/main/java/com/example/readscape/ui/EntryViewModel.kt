@@ -1,32 +1,42 @@
 package com.example.readscape.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.readscape.data.EntryUiState
+import com.example.readscape.model.User
+import com.example.readscape.model.UserDao
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class EntryViewModel : ViewModel() {
+class EntryViewModel(private val userDao: UserDao) : ViewModel() {
     private val _uiState = MutableStateFlow(EntryUiState())
     val uiState: StateFlow<EntryUiState> = _uiState.asStateFlow()
 
     fun logIn(email: String, password: String) {
-        /* TODO: read from database*/
-        if (email == "aa" && password == "shen") {
-            setLoggedIn(true)
+        viewModelScope.launch {
+            val user = userDao.getUserByEmail(email)
+            if (user != null && user.password == password) {
+                setLoggedIn(true)
+            } else {
+                setLoggedIn(false)
+            }
         }
     }
 
     fun signUp(email: String, password: String, repeatPassword: String): Boolean {
         if (password == repeatPassword) {
-            /* TODO: try to add to database*/
+            viewModelScope.launch {
+                val user = User(0, email, password)
+                userDao.insertUsers(user)
+            }
             return true
         } else {
             return false
         }
     }
-
     fun logOut() {
         setLoggedIn(false)
     }
