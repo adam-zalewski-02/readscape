@@ -15,17 +15,25 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.example.readscape.model.BookService
 import com.example.readscape.ui.LoginScreen
 import com.example.readscape.ui.theme.ReadscapeTheme
 import com.example.readscape.worker.ReadScapeWorker
 import com.example.readscape.worker.createNotificationChannel
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 class MainActivity : ComponentActivity() {
     private lateinit var userDao: UserDao
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // local database
         userDao = BookDatabase.getInstance(this).userDao()
+
+        // notifications
         createNotificationChannel(this)
 
         setContent {

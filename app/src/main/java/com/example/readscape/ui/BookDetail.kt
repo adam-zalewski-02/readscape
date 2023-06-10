@@ -12,15 +12,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.readscape.model.VolumeInfo
 
 @Composable
-fun BookDetailScreen(book: Book) {
+fun BookDetailScreen(book: VolumeInfo) {
     Box(modifier = Modifier.fillMaxSize()) {
         // Content of the book detail screen
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = book.title, fontWeight = FontWeight.Bold, fontSize = 20.sp)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = book.author, fontSize = 16.sp)
+            Text(text = book.authors.toString(), fontSize = 16.sp)
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = "Description:", fontWeight = FontWeight.Bold, fontSize = 16.sp)
             Text(text = book.description, fontSize = 14.sp)

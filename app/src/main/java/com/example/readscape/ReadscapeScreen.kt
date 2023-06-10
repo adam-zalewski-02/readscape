@@ -20,18 +20,24 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.readscape.model.BookService
 import com.example.readscape.model.UserDao
+import com.example.readscape.ui.BookOverviewScreen
 import com.example.readscape.ui.EntryViewModel
 import com.example.readscape.ui.LoginScreen
 import com.example.readscape.ui.RegistrationFailedScreen
 import com.example.readscape.ui.RegistrationSuccessfulScreen
 import com.example.readscape.ui.SignupScreen
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 enum class ReadScapeScreen {
     LogIn,
     SignUp,
     RegistrationSuccess,
     RegistrationFailed,
+    BookOverview,
     Home
 }
 
@@ -73,6 +79,15 @@ fun ReadScapeApp(userDao: UserDao) {
         backStackEntry?.destination?.route ?: ReadScapeScreen.LogIn.name
     )
     val loginStatus by viewModel.loginStatus.collectAsState()
+
+    // external API
+    val retrofit = Retrofit.Builder()
+        .baseUrl("https://www.googleapis.com/books/")
+        .client(OkHttpClient())
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    val bookService = retrofit.create(BookService::class.java)
 
     LaunchedEffect(loginStatus) {
         when (loginStatus) {
@@ -147,8 +162,10 @@ fun ReadScapeApp(userDao: UserDao) {
                 )
             }
 
-            composable(route = ReadScapeScreen.Home.name) {
-
+            composable(route = ReadScapeScreen.BookOverview.name) {
+                BookOverviewScreen(
+                    bookService = bookService
+                )
             }
         }
     }
