@@ -15,14 +15,15 @@ class EntryViewModel(private val userDao: UserDao) : ViewModel() {
     private val _uiState = MutableStateFlow(EntryUiState())
     val uiState: StateFlow<EntryUiState> = _uiState.asStateFlow()
 
+    private val _loginStatus = MutableStateFlow(false)
+    val loginStatus: StateFlow<Boolean> = _loginStatus.asStateFlow()
+
     fun logIn(email: String, password: String) {
         viewModelScope.launch {
             val user = userDao.getUserByEmail(email)
-            if (user != null && user.password == password) {
-                setLoggedIn(true)
-            } else {
-                setLoggedIn(false)
-            }
+            println(user)
+
+            _loginStatus.value = user != null && user.password == password
         }
     }
 

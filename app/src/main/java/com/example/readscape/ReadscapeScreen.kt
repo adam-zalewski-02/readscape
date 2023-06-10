@@ -10,6 +10,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.compose.rememberNavController
@@ -71,7 +72,15 @@ fun ReadScapeApp(userDao: UserDao) {
     val currentScreen = ReadScapeScreen.valueOf(
         backStackEntry?.destination?.route ?: ReadScapeScreen.LogIn.name
     )
+    val loginStatus by viewModel.loginStatus.collectAsState()
 
+    LaunchedEffect(loginStatus) {
+        println(loginStatus)
+        when (loginStatus) {
+            true -> navController.navigate(ReadScapeScreen.Home.name)
+            false -> navController.navigate(ReadScapeScreen.LogIn.name)
+        }
+    }
     Scaffold(
         topBar = {
             ReadScapeAppBar(
@@ -80,7 +89,6 @@ fun ReadScapeApp(userDao: UserDao) {
             )
         }
     ) { innerPadding ->
-        val uiState by viewModel.uiState.collectAsState()
 
         NavHost(
             navController = navController,
@@ -91,13 +99,6 @@ fun ReadScapeApp(userDao: UserDao) {
                 LoginScreen(
                     onLogInButtonClicked = { email, password ->
                         viewModel.logIn(email, password)
-                        if (viewModel.uiState.value.loggedIn) {
-                            println("login success")
-                            navController.navigate(ReadScapeScreen.Home.name)
-                        } else {
-                            println("login failed")
-                            navController.navigate(ReadScapeScreen.LogIn.name)
-                        }
                     },
                     onSignUpButtonClicked = {
                         navController.navigate(ReadScapeScreen.SignUp.name)
@@ -110,7 +111,7 @@ fun ReadScapeApp(userDao: UserDao) {
                     }
                 )
             }
-            
+
             composable(route = ReadScapeScreen.SignUp.name) {
                 SignupScreen(
                     onLogInButtonClicked = {
