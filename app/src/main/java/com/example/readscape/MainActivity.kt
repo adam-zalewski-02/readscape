@@ -9,6 +9,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.readscape.data.BookDatabase
+import com.example.readscape.model.UserDao
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
@@ -20,14 +22,16 @@ import com.example.readscape.worker.createNotificationChannel
 import java.util.concurrent.TimeUnit
 
 class MainActivity : ComponentActivity() {
+    private lateinit var userDao: UserDao
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        userDao = BookDatabase.getInstance(this).userDao()
         createNotificationChannel(this)
 
         setContent {
             ReadscapeTheme() {
-                ReadScapeApp()
+                ReadScapeApp(userDao)
             }
         }
 

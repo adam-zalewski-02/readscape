@@ -10,6 +10,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.compose.rememberNavController
@@ -19,6 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.readscape.model.UserDao
 import com.example.readscape.ui.EntryViewModel
 import com.example.readscape.ui.LoginScreen
 import com.example.readscape.ui.RegistrationFailedScreen
@@ -61,7 +63,8 @@ fun ReadScapeAppBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReadScapeApp(viewModel: EntryViewModel = viewModel()) {
+fun ReadScapeApp(userDao: UserDao) {
+    val viewModel: EntryViewModel = viewModel(factory = EntryViewModelFactory(userDao))
     val navController = rememberNavController()
 
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -69,9 +72,14 @@ fun ReadScapeApp(viewModel: EntryViewModel = viewModel()) {
     val currentScreen = ReadScapeScreen.valueOf(
         backStackEntry?.destination?.route ?: ReadScapeScreen.LogIn.name
     )
+    val loginStatus by viewModel.loginStatus.collectAsState()
 
-    val viewModel: EntryViewModel = viewModel()
-
+    LaunchedEffect(loginStatus) {
+        when (loginStatus) {
+            true -> navController.navigate(ReadScapeScreen.Home.name)
+            false -> navController.navigate(ReadScapeScreen.LogIn.name)
+        }
+    }
     Scaffold(
         topBar = {
             ReadScapeAppBar(
@@ -80,7 +88,6 @@ fun ReadScapeApp(viewModel: EntryViewModel = viewModel()) {
             )
         }
     ) { innerPadding ->
-        val uiState by viewModel.uiState.collectAsState()
 
         NavHost(
             navController = navController,
@@ -91,13 +98,6 @@ fun ReadScapeApp(viewModel: EntryViewModel = viewModel()) {
                 LoginScreen(
                     onLogInButtonClicked = { email, password ->
                         viewModel.logIn(email, password)
-                        if (viewModel.uiState.value.loggedIn) {
-                            println("login success")
-                            navController.navigate(ReadScapeScreen.Home.name)
-                        } else {
-                            println("login failed")
-                            navController.navigate(ReadScapeScreen.LogIn.name)
-                        }
                     },
                     onSignUpButtonClicked = {
                         navController.navigate(ReadScapeScreen.SignUp.name)
@@ -110,7 +110,7 @@ fun ReadScapeApp(viewModel: EntryViewModel = viewModel()) {
                     }
                 )
             }
-            
+
             composable(route = ReadScapeScreen.SignUp.name) {
                 SignupScreen(
                     onLogInButtonClicked = {
