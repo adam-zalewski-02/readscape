@@ -1,5 +1,7 @@
 package com.example.readscape
 
+import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -23,6 +25,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.readscape.model.UserDao
 import com.example.readscape.ui.EntryViewModel
 import com.example.readscape.ui.LoginScreen
+import com.example.readscape.ui.ProfileScreen
 import com.example.readscape.ui.RegistrationFailedScreen
 import com.example.readscape.ui.RegistrationSuccessfulScreen
 import com.example.readscape.ui.SignupScreen
@@ -32,6 +35,7 @@ enum class ReadScapeScreen {
     SignUp,
     RegistrationSuccess,
     RegistrationFailed,
+    Profile,
     Home
 }
 
@@ -76,7 +80,13 @@ fun ReadScapeApp(userDao: UserDao) {
 
     LaunchedEffect(loginStatus) {
         when (loginStatus) {
-            true -> navController.navigate(ReadScapeScreen.Home.name)
+            true -> navController.navigate(ReadScapeScreen.Home.name) {
+                // Pop up to the start destination (Login) and clear it from the back stack
+                popUpTo(ReadScapeScreen.LogIn.name) {
+                    // Exclude the start destination (Login) from the back stack
+                    inclusive = false
+                }
+            }
             false -> navController.navigate(ReadScapeScreen.LogIn.name)
         }
     }
@@ -150,6 +160,15 @@ fun ReadScapeApp(userDao: UserDao) {
             composable(route = ReadScapeScreen.Home.name) {
 
             }
+
+            /*
+            composable(route = ReadScapeScreen.Profile.name) {
+                ProfileScreen(
+                    user =
+                ) {
+
+                }
+            }*/
         }
     }
 }
