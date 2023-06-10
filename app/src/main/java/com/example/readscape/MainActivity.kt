@@ -9,16 +9,34 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.readscape.ui.LoginScreen
 import com.example.readscape.ui.theme.ReadscapeTheme
+import com.example.readscape.worker.ReadScapeWorker
+import com.example.readscape.worker.createNotificationChannel
+import java.util.concurrent.TimeUnit
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        createNotificationChannel(this)
+
         setContent {
             ReadscapeTheme() {
                 ReadScapeApp()
             }
         }
+
+        scheduleReadScapeWorker()
+    }
+    private fun scheduleReadScapeWorker() {
+        val workRequest = OneTimeWorkRequestBuilder<ReadScapeWorker>()
+            .build()
+
+        WorkManager.getInstance(applicationContext).enqueue(workRequest)
     }
 }
