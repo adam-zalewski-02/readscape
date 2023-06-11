@@ -79,10 +79,11 @@ fun ReadScapeApp(userDao: UserDao, bookRepository: BookRepository) {
         backStackEntry?.destination?.route ?: ReadScapeScreen.LogIn.name
     )
     val loginStatus by viewModel.loginStatus.collectAsState()
-    val books by viewModel.books.collectAsState()
+
+
     LaunchedEffect(loginStatus) {
         when (loginStatus) {
-            true -> navController.navigate(ReadScapeScreen.Home.name)
+            true -> navController.navigate(ReadScapeScreen.BookOverview.name)
             false -> navController.navigate(ReadScapeScreen.LogIn.name)
         }
     }
@@ -118,7 +119,6 @@ fun ReadScapeApp(userDao: UserDao, bookRepository: BookRepository) {
             }
 
             composable(route = ReadScapeScreen.SignUp.name) {
-                println(books)
                 SignupScreen(
                     onLogInButtonClicked = {
                         navController.navigate(ReadScapeScreen.LogIn.name)
@@ -155,6 +155,11 @@ fun ReadScapeApp(userDao: UserDao, bookRepository: BookRepository) {
             }
 
             composable(route = ReadScapeScreen.BookOverview.name) {
+                val books by viewModel.books.collectAsState(initial = listOf())
+                LaunchedEffect(key1 = Unit) {
+                    viewModel.fetchBooks()
+                }
+                println(books)
                 BookOverviewScreen(
                     books = books
                 )
