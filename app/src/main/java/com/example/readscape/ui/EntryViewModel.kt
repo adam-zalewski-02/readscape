@@ -3,6 +3,8 @@ package com.example.readscape.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.readscape.data.EntryUiState
+import com.example.readscape.model.BookRepository
+import com.example.readscape.model.book.Volume
 import com.example.readscape.model.user.User
 import com.example.readscape.model.user.UserDao
 import com.example.readscape.network.BookService
@@ -14,21 +16,15 @@ import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
-class EntryViewModel(private val userDao: UserDao) : ViewModel() {
+class EntryViewModel(private val userDao: UserDao, private val bookRepository: BookRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(EntryUiState())
     val uiState: StateFlow<EntryUiState> = _uiState.asStateFlow()
 
     private val _loginStatus = MutableStateFlow(false)
     val loginStatus: StateFlow<Boolean> = _loginStatus.asStateFlow()
 
-    // external API
-    val retrofit = Retrofit.Builder()
-        .baseUrl("https://www.googleapis.com/books/")
-        .client(OkHttpClient())
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    val bookService = retrofit.create(BookService::class.java)
+    private val _books = MutableStateFlow<List<Volume>>(emptyList())
+    val books: StateFlow<List<Volume>> = _books.asStateFlow()
 
     fun logIn(email: String, password: String) {
         viewModelScope.launch {
@@ -62,5 +58,12 @@ class EntryViewModel(private val userDao: UserDao) : ViewModel() {
 
     private fun setLoggedIn(loggedIn: Boolean) {
         _uiState.update { currentState -> currentState.copy(loggedIn = loggedIn) }
+    }
+
+    fun fetchBooks() {
+        viewModelScope.launch {
+            val books = bookRepository.getBooks()
+            _books.value = books
+        }
     }
 }
