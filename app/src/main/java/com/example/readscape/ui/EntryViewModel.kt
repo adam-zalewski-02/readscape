@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.readscape.data.EntryUiState
 import com.example.readscape.model.BookRepository
 import com.example.readscape.model.book.Volume
+import com.example.readscape.model.book.VolumeInfo
 import com.example.readscape.model.user.User
 import com.example.readscape.model.user.UserDao
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +27,9 @@ class EntryViewModel(private val userDao: UserDao, private val bookRepository: B
 
     private val _loggedInUser = MutableStateFlow<User?>(null)
     val loggedInUser: StateFlow<User?> = _loggedInUser.asStateFlow()
+
+    private val _selectedBook = MutableStateFlow<Volume?>(null)
+    val selectedBook: StateFlow<Volume?> = _selectedBook.asStateFlow()
 
     fun logIn(email: String, password: String) {
         viewModelScope.launch {
@@ -84,6 +88,10 @@ class EntryViewModel(private val userDao: UserDao, private val bookRepository: B
 
     fun setPassword(password: String) {
         _uiState.update { currentState -> currentState.copy(password = password) }
+    }
+
+    fun setSelectedBook(volume: Volume) {
+        _selectedBook.value = volume
     }
 
     private fun setLoggedIn(loggedIn: Boolean) {

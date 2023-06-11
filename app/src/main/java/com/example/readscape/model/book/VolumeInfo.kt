@@ -1,7 +1,9 @@
 package com.example.readscape.model.book
 
+import com.squareup.moshi.JsonClass
 import kotlinx.serialization.Serializable
 
+@JsonClass(generateAdapter = true)
 @Serializable
 data class VolumeInfo(
     val title: String,
