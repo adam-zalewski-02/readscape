@@ -15,13 +15,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.readscape.model.BookRepository
-import com.example.readscape.network.BookService
 import com.example.readscape.model.user.UserDao
 import com.example.readscape.ui.BookOverviewScreen
 import com.example.readscape.ui.EntryViewModel
@@ -29,8 +29,7 @@ import com.example.readscape.ui.LoginScreen
 import com.example.readscape.ui.RegistrationFailedScreen
 import com.example.readscape.ui.RegistrationSuccessfulScreen
 import com.example.readscape.ui.SignupScreen
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
+import com.example.readscape.ui.UserPreferences
 
 enum class ReadScapeScreen {
     LogIn,
@@ -71,7 +70,9 @@ fun ReadScapeAppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReadScapeApp(userDao: UserDao, bookRepository: BookRepository) {
-    val viewModel: EntryViewModel = viewModel(factory = EntryViewModelFactory(userDao, bookRepository))
+    val context = LocalContext.current
+    val userPreferences = UserPreferences(context)
+    val viewModel: EntryViewModel = viewModel(factory = EntryViewModelFactory(userDao, bookRepository, userPreferences))
     val navController = rememberNavController()
 
     val backStackEntry by navController.currentBackStackEntryAsState()

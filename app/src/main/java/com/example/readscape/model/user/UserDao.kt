@@ -12,7 +12,7 @@ interface UserDao {
     suspend fun getAllUsers(): List<User>
 
     @Query("SELECT * FROM users WHERE id = :userId")
-    suspend fun getUserById(userId: Long): User?
+    suspend fun getUserById(userId: Int): User?
     @Query("SELECT * FROM users WHERE email = :email")
     suspend fun getUserByEmail(email: String): User?
     @Insert(onConflict = OnConflictStrategy.REPLACE)
