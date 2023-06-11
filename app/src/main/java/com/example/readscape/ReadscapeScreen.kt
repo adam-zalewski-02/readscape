@@ -38,7 +38,8 @@ enum class ReadScapeScreen {
     RegistrationSuccess,
     RegistrationFailed,
     BookOverview,
-    Home
+    BookDetail,
+    Profile
 }
 
 /**
@@ -101,6 +102,7 @@ fun ReadScapeApp(userDao: UserDao, bookRepository: BookRepository) {
             startDestination = ReadScapeScreen.LogIn.name,
             modifier = Modifier.padding(innerPadding)
         ) {
+            /* LOG IN */
             composable(route = ReadScapeScreen.LogIn.name) {
                 LoginScreen(
                     onLogInButtonClicked = { email, password ->
@@ -118,6 +120,7 @@ fun ReadScapeApp(userDao: UserDao, bookRepository: BookRepository) {
                 )
             }
 
+            /* SIGN UP */
             composable(route = ReadScapeScreen.SignUp.name) {
                 SignupScreen(
                     onLogInButtonClicked = {
@@ -142,18 +145,21 @@ fun ReadScapeApp(userDao: UserDao, bookRepository: BookRepository) {
                 )
             }
 
+            /* REGISTRATION SUCCESS */
             composable(route = ReadScapeScreen.RegistrationSuccess.name) {
                 RegistrationSuccessfulScreen(
                     onBackToLoginClicked = { navController.navigate(ReadScapeScreen.LogIn.name) }
                 )
             }
 
+            /* REGISTRATION FAILED */
             composable(route = ReadScapeScreen.RegistrationFailed.name) {
                 RegistrationFailedScreen(
                     onTryAgainClicked = { navController.navigate(ReadScapeScreen.SignUp.name) }
                 )
             }
 
+            /* BOOK OVERVIEW */
             composable(route = ReadScapeScreen.BookOverview.name) {
                 val books by viewModel.books.collectAsState(initial = listOf())
                 LaunchedEffect(key1 = Unit) {
@@ -163,6 +169,16 @@ fun ReadScapeApp(userDao: UserDao, bookRepository: BookRepository) {
                 BookOverviewScreen(
                     books = books
                 )
+            }
+
+            /* BOOK DETAIL */
+            composable(route = ReadScapeScreen.BookDetail.name) {
+
+            }
+
+            /*PROFILE*/
+            composable(route = ReadScapeScreen.Profile.name) {
+
             }
         }
     }
