@@ -1,5 +1,6 @@
 package com.example.readscape
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -36,6 +37,7 @@ import com.example.readscape.model.user.UserDao
 import com.example.readscape.ui.BookOverviewScreen
 import com.example.readscape.ui.EntryViewModel
 import com.example.readscape.ui.LoginScreen
+import com.example.readscape.ui.ProfileScreen
 import com.example.readscape.ui.RegistrationFailedScreen
 import com.example.readscape.ui.RegistrationSuccessfulScreen
 import com.example.readscape.ui.SignupScreen
@@ -115,6 +117,7 @@ private fun currentRoute(navController: NavController): String? {
     return navBackStackEntry?.destination?.route
 }
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReadScapeApp(userDao: UserDao, bookRepository: BookRepository) {
@@ -235,7 +238,15 @@ fun ReadScapeApp(userDao: UserDao, bookRepository: BookRepository) {
 
             /*PROFILE*/
             composable(route = ReadScapeScreen.Profile.name) {
-
+                viewModel.loggedInUser.value?.let { it1 ->
+                    ProfileScreen(
+                        user = it1,
+                        onLogoutClicked = {
+                            viewModel.logOut()
+                            navController.navigate(ReadScapeScreen.LogIn.name)
+                        }
+                    )
+                }
             }
         }
     }
