@@ -2,7 +2,7 @@ package com.example.readscape
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.readscape.model.UserDao
+import com.example.readscape.model.user.UserDao
 import com.example.readscape.ui.EntryViewModel
 
 class EntryViewModelFactory(private val userDao: UserDao) : ViewModelProvider.Factory {

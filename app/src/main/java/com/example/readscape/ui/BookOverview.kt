@@ -26,40 +26,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.readscape.ReadScapeAppBar
-import com.example.readscape.model.Book
-import com.example.readscape.model.BookService
-import com.example.readscape.model.VolumeInfo
-import com.example.readscape.ui.theme.ReadscapeTheme
-import androidx.compose.foundation.lazy.LazyListScope
-import com.example.readscape.model.BooksApiResponse
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookOverviewScreen(bookService: BookService) {
-    val booksState = remember { mutableStateOf<List<Book>>(emptyList()) }
-
-    LaunchedEffect(Unit) {
-        try {
-            val response = bookService.getBooks("android", 10)
-            if (response.isSuccessful) {
-                val books = BooksApiResponse?.items?.mapNotNull { item -> item.toBook() }
-                if (books != null) {
-                    booksState.value = books
-                }
-            } else {
-                // Handle API error
-                // Show error message or retry logic
-            }
-        } catch (e: Exception) {
-            // Handle network error
-            // Show error message or retry logic
-        }
-    }
+fun BookOverviewScreen() {
 
     Scaffold(
         topBar = {

@@ -1,4 +1,4 @@
-package com.example.readscape.model
+package com.example.readscape.model.user
 
 import androidx.room.Dao
 import androidx.room.Delete

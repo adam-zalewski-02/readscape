@@ -3,8 +3,8 @@ package com.example.readscape.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.readscape.data.EntryUiState
-import com.example.readscape.model.User
-import com.example.readscape.model.UserDao
+import com.example.readscape.model.user.User
+import com.example.readscape.model.user.UserDao
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

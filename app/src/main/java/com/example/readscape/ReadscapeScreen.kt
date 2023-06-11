@@ -20,8 +20,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.readscape.model.BookService
-import com.example.readscape.model.UserDao
+import com.example.readscape.network.BookService
+import com.example.readscape.model.user.UserDao
 import com.example.readscape.ui.BookOverviewScreen
 import com.example.readscape.ui.EntryViewModel
 import com.example.readscape.ui.LoginScreen

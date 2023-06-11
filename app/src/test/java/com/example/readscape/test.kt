@@ -5,8 +5,8 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.readscape.data.BookDatabase
-import com.example.readscape.model.User
-import com.example.readscape.model.UserDao
+import com.example.readscape.model.user.User
+import com.example.readscape.model.user.UserDao
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
