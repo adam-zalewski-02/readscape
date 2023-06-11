@@ -54,8 +54,10 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.test.ext:junit-ktx:1.1.5'
     def room_version = "2.5.1"
+    def moshi_version = "1.14.0"
+
+    implementation 'androidx.test.ext:junit-ktx:1.1.5'
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
     implementation 'androidx.activity:activity-compose:1.7.2'
@@ -82,4 +84,12 @@ dependencies {
 
     // worker
     implementation "androidx.work:work-runtime-ktx:2.8.1"
+
+    // Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
+
+    implementation "com.squareup.moshi:moshi:$moshi_version"
+    implementation "com.squareup.moshi:moshi-kotlin:$moshi_version"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
 }

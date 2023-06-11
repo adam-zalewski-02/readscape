@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.readscape.model.User
+import com.example.readscape.model.user.User
 import com.example.readscape.ui.components.customButton
 import com.example.readscape.ui.theme.GoldenAmber
 import com.example.readscape.ui.theme.MidnightIndigo

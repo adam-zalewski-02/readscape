@@ -3,23 +3,30 @@ package com.example.readscape.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.readscape.data.EntryUiState
-import com.example.readscape.model.User
-import com.example.readscape.model.UserDao
+import com.example.readscape.model.BookRepository
+import com.example.readscape.model.book.Volume
+import com.example.readscape.model.user.User
+import com.example.readscape.model.user.UserDao
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class EntryViewModel(private val userDao: UserDao, private val userPreferences: UserPreferences) : ViewModel() {
+class EntryViewModel(private val userDao: UserDao, private val bookRepository: BookRepository, private val userPreferences: UserPreferences) : ViewModel() {
+
     private val _uiState = MutableStateFlow(EntryUiState())
     val uiState: StateFlow<EntryUiState> = _uiState.asStateFlow()
 
     private val _loginStatus = MutableStateFlow(false)
     val loginStatus: StateFlow<Boolean> = _loginStatus.asStateFlow()
 
+    private val _books = MutableStateFlow<List<Volume>>(emptyList())
+    val books: StateFlow<List<Volume>> = _books.asStateFlow()
+
     private val _loggedInUser = MutableStateFlow<User?>(null)
     val loggedInUser: StateFlow<User?> = _loggedInUser.asStateFlow()
+
     fun logIn(email: String, password: String) {
         viewModelScope.launch {
             val user = userDao.getUserByEmail(email)
@@ -46,15 +53,18 @@ class EntryViewModel(private val userDao: UserDao, private val userPreferences: 
             return false
         }
     }
+
     fun logOut() {
         _loggedInUser.value = null
         _loginStatus.value = false
         userPreferences.setLoggedInStatus(false)
         userPreferences.setLoggedUserId(0)
     }
+
     init {
         loadUser()
     }
+
     fun loadUser() {
         val userId = userPreferences.getLoggedUserId()
         if (userId != 0) {
@@ -75,4 +85,16 @@ class EntryViewModel(private val userDao: UserDao, private val userPreferences: 
     fun setPassword(password: String) {
         _uiState.update { currentState -> currentState.copy(password = password) }
     }
+
+    private fun setLoggedIn(loggedIn: Boolean) {
+        _uiState.update { currentState -> currentState.copy(loggedIn = loggedIn) }
+    }
+
+    fun fetchBooks() {
+        viewModelScope.launch {
+            val books = bookRepository.getAllVolumes()
+            _books.value = books
+        }
+    }
+
 }

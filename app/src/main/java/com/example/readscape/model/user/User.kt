@@ -1,4 +1,4 @@
-package com.example.readscape.model
+package com.example.readscape.model.user
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

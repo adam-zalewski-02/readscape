@@ -21,10 +21,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.readscape.model.UserDao
+import com.example.readscape.model.BookRepository
+import com.example.readscape.model.user.UserDao
+import com.example.readscape.ui.BookOverviewScreen
 import com.example.readscape.ui.EntryViewModel
 import com.example.readscape.ui.LoginScreen
-import com.example.readscape.ui.ProfileScreen
 import com.example.readscape.ui.RegistrationFailedScreen
 import com.example.readscape.ui.RegistrationSuccessfulScreen
 import com.example.readscape.ui.SignupScreen
@@ -35,8 +36,9 @@ enum class ReadScapeScreen {
     SignUp,
     RegistrationSuccess,
     RegistrationFailed,
-    Profile,
-    Home
+    BookOverview,
+    BookDetail,
+    Profile
 }
 
 /**
@@ -67,10 +69,10 @@ fun ReadScapeAppBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReadScapeApp(userDao: UserDao) {
+fun ReadScapeApp(userDao: UserDao, bookRepository: BookRepository) {
     val context = LocalContext.current
     val userPreferences = UserPreferences(context)
-    val viewModel: EntryViewModel = viewModel(factory = EntryViewModelFactory(userDao, userPreferences))
+    val viewModel: EntryViewModel = viewModel(factory = EntryViewModelFactory(userDao, bookRepository, userPreferences))
     val navController = rememberNavController()
 
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -80,9 +82,10 @@ fun ReadScapeApp(userDao: UserDao) {
     )
     val loginStatus by viewModel.loginStatus.collectAsState()
 
+
     LaunchedEffect(loginStatus) {
         when (loginStatus) {
-            true -> navController.navigate(ReadScapeScreen.Profile.name)
+            true -> navController.navigate(ReadScapeScreen.BookOverview.name)
             false -> navController.navigate(ReadScapeScreen.LogIn.name)
         }
     }
@@ -100,6 +103,7 @@ fun ReadScapeApp(userDao: UserDao) {
             startDestination = ReadScapeScreen.LogIn.name,
             modifier = Modifier.padding(innerPadding)
         ) {
+            /* LOG IN */
             composable(route = ReadScapeScreen.LogIn.name) {
                 LoginScreen(
                     onLogInButtonClicked = { email, password ->
@@ -117,6 +121,7 @@ fun ReadScapeApp(userDao: UserDao) {
                 )
             }
 
+            /* SIGN UP */
             composable(route = ReadScapeScreen.SignUp.name) {
                 SignupScreen(
                     onLogInButtonClicked = {
@@ -141,34 +146,40 @@ fun ReadScapeApp(userDao: UserDao) {
                 )
             }
 
+            /* REGISTRATION SUCCESS */
             composable(route = ReadScapeScreen.RegistrationSuccess.name) {
                 RegistrationSuccessfulScreen(
                     onBackToLoginClicked = { navController.navigate(ReadScapeScreen.LogIn.name) }
                 )
             }
 
+            /* REGISTRATION FAILED */
             composable(route = ReadScapeScreen.RegistrationFailed.name) {
                 RegistrationFailedScreen(
                     onTryAgainClicked = { navController.navigate(ReadScapeScreen.SignUp.name) }
                 )
             }
 
-            composable(route = ReadScapeScreen.Home.name) {
+            /* BOOK OVERVIEW */
+            composable(route = ReadScapeScreen.BookOverview.name) {
+                val books by viewModel.books.collectAsState(initial = listOf())
+                LaunchedEffect(key1 = Unit) {
+                    viewModel.fetchBooks()
+                }
+                println(books)
+                BookOverviewScreen(
+                    books = books
+                )
+            }
+
+            /* BOOK DETAIL */
+            composable(route = ReadScapeScreen.BookDetail.name) {
 
             }
 
-
+            /*PROFILE*/
             composable(route = ReadScapeScreen.Profile.name) {
-                val userState by viewModel.loggedInUser.collectAsState(initial = null)
-                userState?.let {user ->
-                    ProfileScreen(
-                        user = user,
-                        onLogoutClicked = {
-                            viewModel.logOut()
-                            navController.navigate(ReadScapeScreen.LogIn.name)
-                        }
-                    )
-                }
+
             }
         }
     }

@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.readscape.model.User
-import com.example.readscape.model.UserDao
+import com.example.readscape.model.user.User
+import com.example.readscape.model.user.UserDao
 
 @Database(entities = [User::class ], version = 1)
 abstract class BookDatabase : RoomDatabase() {
