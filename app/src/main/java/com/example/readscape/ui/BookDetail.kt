@@ -24,7 +24,7 @@ fun BookDetailScreen(book: VolumeInfo) {
             Text(text = book.authors.toString(), fontSize = 16.sp)
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = "Description:", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-            Text(text = book.description, fontSize = 14.sp)
+            book.description?.let { Text(text = it, fontSize = 14.sp) }
         }
     }
 }

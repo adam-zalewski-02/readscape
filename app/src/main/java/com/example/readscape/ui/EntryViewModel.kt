@@ -62,7 +62,7 @@ class EntryViewModel(private val userDao: UserDao, private val bookRepository: B
 
     fun fetchBooks() {
         viewModelScope.launch {
-            val books = bookRepository.getBooks()
+            val books = bookRepository.getAllVolumes()
             _books.value = books
         }
     }
