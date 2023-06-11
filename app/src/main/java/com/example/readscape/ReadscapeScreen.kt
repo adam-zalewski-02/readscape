@@ -10,12 +10,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,11 +27,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navArgument
 import com.example.readscape.model.BookRepository
+import com.example.readscape.model.book.Volume
+import com.example.readscape.model.book.VolumeInfo
 import com.example.readscape.model.user.UserDao
+import com.example.readscape.ui.BookDetailScreen
 import com.example.readscape.ui.BookOverviewScreen
 import com.example.readscape.ui.EntryViewModel
 import com.example.readscape.ui.LoginScreen
@@ -42,6 +45,8 @@ import com.example.readscape.ui.RegistrationFailedScreen
 import com.example.readscape.ui.RegistrationSuccessfulScreen
 import com.example.readscape.ui.SignupScreen
 import com.example.readscape.ui.UserPreferences
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 enum class ReadScapeScreen {
     LogIn,
@@ -225,16 +230,22 @@ fun ReadScapeApp(userDao: UserDao, bookRepository: BookRepository) {
                 LaunchedEffect(key1 = Unit) {
                     viewModel.fetchBooks()
                 }
-                println(books)
                 BookOverviewScreen(
-                    books = books
+                    books = books,
+                    onItemClick = { book ->
+                        viewModel.setSelectedBook(book)
+                        navController.navigate(ReadScapeScreen.BookDetail.name)
+                    }
                 )
             }
 
             /* BOOK DETAIL */
             composable(route = ReadScapeScreen.BookDetail.name) {
-
+                val book = viewModel.selectedBook
+                book.value?.let { it1 -> BookDetailScreen(book = it1.volumeInfo) }
             }
+
+
 
             /*PROFILE*/
             composable(route = ReadScapeScreen.Profile.name) {

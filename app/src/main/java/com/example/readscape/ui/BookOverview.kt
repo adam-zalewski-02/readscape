@@ -29,7 +29,10 @@ import com.example.readscape.ui.theme.MidnightIndigo
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun BookOverviewScreen(books: List<Volume>) {
+fun BookOverviewScreen(
+    books: List<Volume>,
+    onItemClick: (Volume) -> Unit
+) {
     Box(
         modifier = Modifier
             .background(MidnightIndigo)
@@ -50,7 +53,7 @@ fun BookOverviewScreen(books: List<Volume>) {
             }
 
             items(books) { book ->
-                BookItem(book = book)
+                BookItem(book = book, onItemClick = onItemClick)
                 Spacer(modifier = Modifier.padding(bottom = 16.dp))
             }
         }
@@ -58,12 +61,15 @@ fun BookOverviewScreen(books: List<Volume>) {
 }
 
 @Composable
-fun BookItem(book: Volume) {
+fun BookItem(
+    book: Volume,
+    onItemClick: (Volume) -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
-            .clickable { /* Handle book item click */ },
+            .clickable { onItemClick(book) },
         shape = RoundedCornerShape(8.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -102,9 +108,4 @@ fun BookItem(book: Volume) {
             }
         }
     }
-}
-
-@Composable
-fun BottomNavigationBar() {
-    // TODO: Implement bottom navigation bar
 }
