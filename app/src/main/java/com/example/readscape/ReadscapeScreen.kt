@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -22,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -45,6 +47,8 @@ import com.example.readscape.ui.RegistrationFailedScreen
 import com.example.readscape.ui.RegistrationSuccessfulScreen
 import com.example.readscape.ui.SignupScreen
 import com.example.readscape.ui.UserPreferences
+import com.example.readscape.ui.components.customButton
+import com.example.readscape.ui.theme.GoldenAmber
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
@@ -86,7 +90,6 @@ fun ReadScapeAppBar(
 
 @Composable
 fun ReadscapeMenuNavigationBar(navController: NavController) {
-    val currentRoute = currentRoute(navController)
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
         Button(
             onClick = {
@@ -95,7 +98,10 @@ fun ReadscapeMenuNavigationBar(navController: NavController) {
                         inclusive = true
                     }
                 }
-            }
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = GoldenAmber,
+            )
         ) {
             Text("Book Overview")
         }
@@ -109,7 +115,10 @@ fun ReadscapeMenuNavigationBar(navController: NavController) {
                         inclusive = true
                     }
                 }
-            }
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = GoldenAmber,
+            ),
         ) {
             Text("Profile")
         }
