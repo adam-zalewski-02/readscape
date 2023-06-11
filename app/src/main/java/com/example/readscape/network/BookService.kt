@@ -19,7 +19,7 @@ private val retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
     .build()
 
-interface BookApiService {
+interface BookService {
     @GET("volumes?q=search+terms")
     suspend fun getAllVolumes(): List<Volume>
 
@@ -28,7 +28,7 @@ interface BookApiService {
 }
 
 object BookApi {
-    val retrofitService : BookApiService by lazy {
-        retrofit.create(BookApiService::class.java)
+    val retrofitService : BookService by lazy {
+        retrofit.create(BookService::class.java)
     }
 }

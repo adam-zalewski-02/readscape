@@ -80,15 +80,6 @@ fun ReadScapeApp(userDao: UserDao) {
     )
     val loginStatus by viewModel.loginStatus.collectAsState()
 
-    // external API
-    val retrofit = Retrofit.Builder()
-        .baseUrl("https://www.googleapis.com/books/")
-        .client(OkHttpClient())
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    val bookService = retrofit.create(BookService::class.java)
-
     LaunchedEffect(loginStatus) {
         when (loginStatus) {
             true -> navController.navigate(ReadScapeScreen.Home.name)
@@ -164,7 +155,7 @@ fun ReadScapeApp(userDao: UserDao) {
 
             composable(route = ReadScapeScreen.BookOverview.name) {
                 BookOverviewScreen(
-                    bookService = bookService
+
                 )
             }
         }

@@ -29,11 +29,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.readscape.ReadScapeAppBar
+import com.example.readscape.model.book.Volume
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookOverviewScreen() {
+fun BookOverviewScreen(books: List<Volume>) {
 
     Scaffold(
         topBar = {
@@ -57,7 +58,7 @@ fun BookOverviewScreen() {
                     )
                 }
 
-                items(booksState.value) { book ->
+                items(books) { book ->
                     BookItem(book = book)
                     Spacer(modifier = Modifier.padding(bottom = 16.dp))
                 }
@@ -70,7 +71,7 @@ fun BookOverviewScreen() {
 }
 
 @Composable
-fun BookItem(book: Book) {
+fun BookItem(book: Volume) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
